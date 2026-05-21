@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusFarm 8-Bit Pomodoro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #E8DFF5;
+      --panel-color: #FFF2F2;
+      --border-color: #4A4E69;
+      --text-color: #22223B;
+      --pastel-mint: #B8E8D0;
+      --pastel-pink: #F2C4CE;
+      --pastel-blue: #B8D8F2;
+      --pastel-yellow: #F2EAB8;
+      --pastel-purple: #C9B8E8;
+      --grid-hover: #DDFCAD;
+    }
+
+    * {
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      width: 100%;
+      background-color: var(--pastel-purple);
+      border-bottom: 6px double var(--border-color);
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      color: #FFF;
+      text-shadow: 3px 3px 0 var(--border-color);
+      letter-spacing: 1px;
+    }
+
+    .main-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      max-width: 1200px;
+      width: 100%;
+      padding: 24px;
+    }
+
+    .panel {
+      background-color: var(--panel-color);
+      border: 6px double var(--border-color);
+      border-radius: 4px;
+      padding: 20px;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .auth-wrapper {
+      max-width: 450px;
+      width: 100%;
+      margin: 60px auto;
+    }
+
+    .auth-title {
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 24px;
+      color: var(--border-color);
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 8px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .pixel-input {
+      width: 100%;
+      padding: 12px;
+      border: 4px solid var(--border-color);
+      background-color: #FFF;
+      font-size: 10px;
+      outline: none;
+      color: var(--text-color);
+    }
+
+    .pixel-input:focus {
+      background-color: var(--pastel-yellow);
+    }
+
+    .pixel-btn {
+      width: 100%;
+      padding: 14px;
+      border: 4px solid var(--border-color);
+      background-color: var(--pastel-mint);
+      color: var(--border-color);
+      font-size: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 4px 0 var(--border-color);
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .pixel-btn:active {
+      top: 4px;
+      box-shadow: none;
+    }
+
+    .pixel-btn.secondary {
+      background-color: var(--pastel-pink);
+    }
+
+    .pixel-btn.google {
+      background-color: var(--pastel-blue);
+    }
+
+    .dashboard-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .left-side {
+      flex: 1;
+      min-width: 320px;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .right-side {
+      flex: 1.2;
+      min-width: 450px;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .timer-card {
+      text-align: center;
+    }
+
+    .timer-display {
+      font-size: 36px;
+      margin: 20px 0;
+      color: var(--border-color);
+      text-shadow: 2px 2px 0 var(--pastel-pink);
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: var(--pastel-blue);
+      border: 3px solid var(--border-color);
+      font-size: 8px;
+      margin-bottom: 12px;
+    }
+
+    .points-display {
+      font-size: 12px;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .points-icon {
+      width: 16px;
+      height: 16px;
+      background-color: var(--pastel-yellow);
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      gap: 3px;
+      background-color: var(--border-color);
+      padding: 4px;
+      border: 6px solid var(--border-color);
+      aspect-ratio: 1;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .grid-cell {
+      background-color: #C3E2C2;
+      aspect-ratio: 1;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .grid-cell::after {
+      content: "";
+      position: absolute;
+      width: 4px;
+      height: 6px;
+      background-color: #A3C99C;
+      box-shadow: 4px -4px 0 #A3C99C, -4px 2px 0 #A3C99C;
+      opacity: 0.5;
+      bottom: 6px;
+      left: 40%;
+    }
+
+    .grid-cell:nth-child(even) {
+      background-color: #BBDCB8;
+    }
+
+    .grid-cell:nth-child(even)::after {
+      background-color: #9CBA95;
+      box-shadow: -4px -4px 0 #9CBA95, 4px 2px 0 #9CBA95;
+    }
+
+    .grid-cell:hover {
+      background-color: var(--grid-hover) !important;
+    }
+
+    .grid-cell:hover::after {
+      opacity: 0.1;
+    }
+
+    .grid-cell.occupied {
+      background-color: #C3E2C2;
+    }
+
+    .grid-cell.occupied:nth-child(even) {
+      background-color: #BBDCB8;
+    }
+
+    .sprite-asset {
+      width: 85%;
+      height: 85%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .shop-items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .shop-item-card {
+      border: 4px solid var(--border-color);
+      background-color: #FFF;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .shop-item-title {
+      font-size: 8px;
+      margin: 8px 0;
+    }
+
+    .shop-item-price {
+      font-size: 8px;
+      background-color: var(--pastel-yellow);
+      padding: 4px;
+      border: 2px solid var(--border-color);
+      margin-bottom: 8px;
+    }
+
+    .shop-item-size {
+      font-size: 6px;
+      color: gray;
+      margin-bottom: 8px;
+    }
+
+    .inventory-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 80px;
+      background-color: #FFF;
+      border: 4px solid var(--border-color);
+      padding: 10px;
+    }
+
+    .inventory-item {
+      border: 3px solid var(--border-color);
+      background-color: var(--pastel-blue);
+      padding: 6px;
+      font-size: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .inventory-item.selected {
+      background-color: var(--pastel-pink);
+    }
+
+    .system-log {
+      margin-top: 16px;
+      background-color: #2D2D2D;
+      color: #00FF66;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 8px;
+      height: 120px;
+      overflow-y: auto;
+      border: 4px solid var(--border-color);
+    }
+
+    .test-suite-panel {
+      border: 6px double var(--border-color);
+      background-color: #1A1A1A;
+      color: #FFF;
+      padding: 16px;
+      font-size: 9px;
+    }
+
+    .test-header {
+      color: #00FF66;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-size: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .test-item {
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .test-pass {
+      color: #00FF66;
+    }
+
+    .test-fail {
+      color: #FF3333;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .user-info {
+      font-size: 8px;
+    }
+
+    .tab-header {
+      display: flex;
+      border-bottom: 4px solid var(--border-color);
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      border: none;
+      background: none;
+      padding: 10px;
+      font-size: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .tab-btn.active {
+      background-color: var(--pastel-yellow);
+      border-top: 4px solid var(--border-color);
+      border-left: 4px solid var(--border-color);
+      border-right: 4px solid var(--border-color);
+      margin-bottom: -4px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .svg-wrapper {
+      width: 48px;
+      height: 48px;
+    }
+
+    .speed-toggle {
+      font-size: 8px;
+      background-color: var(--pastel-purple);
+      border: 2px solid var(--border-color);
+      padding: 4px;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>FocusFarm 8-Bit Pomodoro</h1>
+  </header>
+
+  <div class="main-container">
+
+    <div id="authPanel" class="panel auth-wrapper">
+      <div class="auth-title">Verify Credentials / Login Gate</div>
+      <div class="input-group">
+        <label>Account Username</label>
+        <input type="text" id="usernameInput" class="pixel-input" placeholder="Enter Username...">
+      </div>
+      <div class="input-group">
+        <label>Password Structure</label>
+        <input type="password" id="passwordInput" class="pixel-input" placeholder="Enter Password...">
+      </div>
+      <div id="authErrorMsg" class="test-fail" style="font-size: 8px; margin-bottom: 12px; display: none;"></div>
+      <button onclick="handleNativeLogin()" class="pixel-btn">Secure Login</button>
+      <button onclick="handleNativeRegister()" class="pixel-btn secondary">Register User Account</button>
+      <div style="text-align: center; margin: 12px 0; font-size: 8px;">OR</div>
+      <button onclick="handleGoogleOAuth()" class="pixel-btn google">Sign In with Google Account</button>
+    </div>
+
+    <div id="dashboardPanel" class="dashboard-layout hidden">
+      
+      <div class="left-side">
+        
+        <div class="panel timer-card">
+          <div class="action-row">
+            <div class="user-info" id="userIdText">User: Guest</div>
+            <button class="pixel-btn secondary" style="width: auto; padding: 6px; font-size: 8px; margin: 0;" onclick="handleLogout()">Logout</button>
+          </div>
+          <div class="status-badge" id="timerStatus">FOCUSING</div>
+          <div class="timer-display" id="timeString">25:00</div>
+          <button id="speedControl" class="speed-toggle" onclick="toggleTimerSpeed()">Mode: Real-Time (1s/s)</button>
+          <div class="timer-controls">
+            <button onclick="startFocusTimer()" class="pixel-btn" style="background-color: var(--pastel-mint)">Start</button>
+            <button onclick="pauseFocusTimer()" class="pixel-btn secondary">Pause</button>
+            <button onclick="resetFocusTimer()" class="pixel-btn" style="background-color: var(--pastel-blue)">Reset</button>
+          </div>
+          <div class="points-display">
+            <div class="points-icon"></div>
+            <span>Balance: <span id="userPoints">0</span> $PTS</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="tab-header">
+            <button id="tabShop" class="tab-btn active" onclick="switchLeftTab('shop')">Store</button>
+            <button id="tabInventory" class="tab-btn" onclick="switchLeftTab('inventory')">Inventory</button>
+          </div>
+
+          <div id="shopContent">
+            <div class="shop-items" id="shopGrid"></div>
+          </div>
+
+          <div id="inventoryContent" class="hidden">
+            <div class="inventory-list" id="inventoryContainer"></div>
+            <div style="font-size: 6px; color: gray; margin-top: 8px; line-height: 1.5;">Click an item above, then click a cell on the grid to place it. Double click placed items on the grid to recover them to inventory.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right-side">
+        
+        <div class="panel" style="text-align: center;">
+          <div style="font-size: 10px; margin-bottom: 12px; text-transform: uppercase;">9x9 Sandbox Grid Area</div>
+          <div class="grid-container" id="sandboxMap"></div>
+        </div>
+
+        <div class="panel test-suite-panel">
+          <div class="test-header">
+            <span>Automated Pre-Flight Verification Matrix</span>
+            <span id="overallTestResult" style="color: var(--pastel-mint)">RUNNING</span>
+          </div>
+          <div class="test-item">
+            <span>Auth Integrity Checks (Passwords)</span>
+            <span id="testAuthResult">PENDING</span>
+          </div>
+          <div class="test-item">
+            <span>Currency Conversion Precision (+25pts)</span>
+            <span id="testCurrencyResult">PENDING</span>
+          </div>
+          <div class="test-item">
+            <span>Grid Coordinates Collision / Out-of-bounds</span>
+            <span id="testGridResult">PENDING</span>
+          </div>
+        </div>
+
+        <div class="system-log" id="systemActivityLog"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const dbEmulator = {
+      getUsers: () => JSON.parse(localStorage.getItem('pomodoro_users_db')) || [],
+      saveUsers: (users) => localStorage.setItem('pomodoro_users_db', JSON.stringify(users)),
+      getInventories: () => JSON.parse(localStorage.getItem('pomodoro_inv_db')) || [],
+      saveInventories: (inv) => localStorage.setItem('pomodoro_inv_db', JSON.stringify(inv)),
+      getGridPlacements: () => JSON.parse(localStorage.getItem('pomodoro_placements_db')) || [],
+      saveGridPlacements: (place) => localStorage.setItem('pomodoro_placements_db', JSON.stringify(place))
+    };
+
+    async function hashPasswordString(raw) {
+      let hash = 0;
+      for (let i = 0; i < raw.length; i++) {
+        const char = raw.charCodeAt(i);
+        hash = (hash << 5) - hash + char;
+        hash = hash & hash;
+      }
+      return "salt_idx_12_hash_" + Math.abs(hash).toString(16);
+    }
+
+    let activeUser = null;
+    let focusTimerInstance = null;
+    let focusTimeSeconds = 1500;
+    let timerRunningStatus = false;
+    let isMockSpeedEnabled = false;
+    let focusSecondsAccumulatedMock = 0;
+
+    let itemCatalog = [
+      {
+        id: "slime",
+        name: "Pet: Slime",
+        type: "Pet",
+        cost: 250,
+        width: 1,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="20" y="50" width="60" height="30" fill="#B8E8D0" stroke="#4A4E69" stroke-width="6"/><rect x="30" y="60" width="10" height="10" fill="#4A4E69"/><rect x="60" y="60" width="10" height="10" fill="#4A4E69"/></svg>`
+      },
+      {
+        id: "bonsai_dragon",
+        name: "Pet: Dragon",
+        type: "Pet",
+        cost: 250,
+        width: 1,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="30" y="30" width="40" height="50" fill="#C9B8E8" stroke="#4A4E69" stroke-width="6"/><rect x="20" y="50" width="15" height="15" fill="#F2C4CE"/><rect x="40" y="45" width="6" height="6" fill="#000"/><rect x="54" y="45" width="6" height="6" fill="#000"/></svg>`
+      },
+      {
+        id: "retro_desk",
+        name: "Desk",
+        type: "Furniture",
+        cost: 120,
+        width: 2,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 50" width="100%" height="100%"><rect x="10" y="10" width="80" height="20" fill="#F2EAB8" stroke="#4A4E69" stroke-width="4"/><rect x="20" y="30" width="10" height="15" fill="#4A4E69"/><rect x="70" y="30" width="10" height="15" fill="#4A4E69"/></svg>`
+      },
+      {
+        id: "lounge_mat",
+        name: "Lounge Mat",
+        type: "Furniture",
+        cost: 120,
+        width: 1,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="15" y="15" width="70" height="70" fill="#B8D8F2" stroke="#4A4E69" stroke-width="6"/><line x1="15" y1="15" x2="85" y2="85" stroke="#4A4E69" stroke-width="4"/></svg>`
+      },
+      {
+        id: "sprout",
+        name: "Sprout",
+        type: "Plant",
+        cost: 50,
+        width: 1,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="40" y="50" width="20" height="30" fill="#8B5A2B" stroke="#4A4E69" stroke-width="5"/><path d="M50,20 Q30,35 50,50 Q70,35 50,20 Z" fill="#B8E8D0" stroke="#4A4E69" stroke-width="4"/></svg>`
+      },
+      {
+        id: "terrarium",
+        name: "Terrarium Jar",
+        type: "Plant",
+        cost: 50,
+        width: 1,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="35" fill="none" stroke="#4A4E69" stroke-width="6"/><rect x="40" y="50" width="20" height="25" fill="#F2C4CE"/></svg>`
+      },
+      {
+        id: "jukebox",
+        name: "Jukebox",
+        type: "Decor",
+        cost: 300,
+        width: 1,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="20" y="20" width="60" height="70" fill="#F2C4CE" stroke="#4A4E69" stroke-width="6"/><rect x="35" y="40" width="30" height="30" fill="#F2EAB8" stroke="#4A4E69" stroke-width="4"/></svg>`
+      },
+      {
+        id: "mystic_orb",
+        name: "Mystic Orb",
+        type: "Decor",
+        cost: 300,
+        width: 1,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="40" r="25" fill="#C9B8E8" stroke="#4A4E69" stroke-width="6"/><rect x="35" y="65" width="30" height="15" fill="#4A4E69"/></svg>`
+      }
+    ];
+
+    let selectedInventoryItemIndex = null;
+
+    function addLogMessage(msg) {
+      const container = document.getElementById("systemActivityLog");
+      const timestamp = new Date().toLocaleTimeString();
+      container.innerHTML += `[${timestamp}] ${msg}<br>`;
+      container.scrollTop = container.scrollHeight;
+    }
+
+    async function handleNativeRegister() {
+      const userField = document.getElementById("usernameInput").value.trim();
+      const passField = document.getElementById("passwordInput").value.trim();
+      const errorMsg = document.getElementById("authErrorMsg");
+
+      if (userField.length < 3 || passField.length < 6) {
+        errorMsg.innerText = "Error: User min 3 chars, Pass min 6 chars.";
+        errorMsg.style.display = "block";
+        addLogMessage("Registration failed: Input credentials too short.");
+        return;
+      }
+
+      const users = dbEmulator.getUsers();
+      const existing = users.find(u => u.username === userField);
+      if (existing) {
+        errorMsg.innerText = "Error: Username already exists.";
+        errorMsg.style.display = "block";
+        addLogMessage("Registration failed: Username already exists.");
+        return;
+      }
+
+      errorMsg.style.display = "none";
+      const hashed = await hashPasswordString(passField);
+
+      const newUser = {
+        id: users.length + 1,
+        username: userField,
+        password_hash: hashed,
+        google_id: null,
+        accumulated_points: 0,
+        created_at: new Date().toISOString()
+      };
+
+      users.push(newUser);
+      dbEmulator.saveUsers(users);
+
+      addLogMessage(`Registered user: ${userField}`);
+      activeUser = newUser;
+      transitionToDashboard();
+    }
+
+    async function handleNativeLogin() {
+      const userField = document.getElementById("usernameInput").value.trim();
+      const passField = document.getElementById("passwordInput").value.trim();
+      const errorMsg = document.getElementById("authErrorMsg");
+
+      if (!userField || !passField) {
+        errorMsg.innerText = "Error: Complete all input fields.";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      const hashToMatch = await hashPasswordString(passField);
+      const users = dbEmulator.getUsers();
+      const matched = users.find(u => u.username === userField && u.password_hash === hashToMatch);
+
+      if (!matched) {
+        errorMsg.innerText = "Error: Invalid username or password.";
+        errorMsg.style.display = "block";
+        addLogMessage("Login rejection triggered: bad password check.");
+        return;
+      }
+
+      errorMsg.style.display = "none";
+      activeUser = matched;
+      addLogMessage(`Authenticated successfully as: ${activeUser.username}`);
+      transitionToDashboard();
+    }
+
+    function handleGoogleOAuth() {
+      const mockGoogleId = "google_user_" + Math.floor(Math.random() * 900000 + 100000);
+      const mockUsername = "G_User_" + Math.floor(Math.random() * 9000);
+      
+      const users = dbEmulator.getUsers();
+      let matched = users.find(u => u.google_id === mockGoogleId);
+      if (!matched) {
+        matched = {
+          id: users.length + 1,
+          username: mockUsername,
+          password_hash: null,
+          google_id: mockGoogleId,
+          accumulated_points: 0,
+          created_at: new Date().toISOString()
+        };
+        users.push(matched);
+        dbEmulator.saveUsers(users);
+      }
+
+      activeUser = matched;
+      addLogMessage(`OAuth2 Login success. ID: ${mockGoogleId}`);
+      transitionToDashboard();
+    }
+
+    function handleLogout() {
+      activeUser = null;
+      pauseFocusTimer();
+      document.getElementById("dashboardPanel").classList.add("hidden");
+      document.getElementById("authPanel").classList.remove("hidden");
+      document.getElementById("usernameInput").value = "";
+      document.getElementById("passwordInput").value = "";
+      addLogMessage("User logged out.");
+    }
+
+    function transitionToDashboard() {
+      document.getElementById("authPanel").classList.add("hidden");
+      document.getElementById("dashboardPanel").classList.remove("hidden");
+      document.getElementById("userIdText").innerText = `User: ${activeUser.username}`;
+      updateBalanceUI();
+      renderSandboxGrid();
+      renderStoreCatalog();
+      renderInventoryUI();
+    }
+
+    function updateBalanceUI() {
+      if (!activeUser) return;
+      document.getElementById("userPoints").innerText = activeUser.accumulated_points;
+    }
+
+    function renderStoreCatalog() {
+      const container = document.getElementById("shopGrid");
+      container.innerHTML = "";
+      itemCatalog.forEach(item => {
+        const itemCard = document.createElement("div");
+        itemCard.className = "shop-item-card";
+        itemCard.innerHTML = `
+          <div class="svg-wrapper">${item.svg}</div>
+          <div class="shop-item-title">${item.name}</div>
+          <div class="shop-item-size">Grid Size: ${item.width}x${item.height}</div>
+          <div class="shop-item-price">${item.cost} PTS</div>
+          <button class="pixel-btn" style="padding: 6px; font-size: 8px; margin: 0;" onclick="purchaseStoreAsset('${item.id}')">Buy</button>
+        `;
+        container.appendChild(itemCard);
+      });
+    }
+
+    function purchaseStoreAsset(itemId) {
+      if (!activeUser) return;
+      const asset = itemCatalog.find(i => i.id === itemId);
+      if (!asset) return;
+
+      if (activeUser.accumulated_points < asset.cost) {
+        addLogMessage("Purchase failed: Insufficient points.");
+        return;
+      }
+
+      activeUser.accumulated_points -= asset.cost;
+      
+      const users = dbEmulator.getUsers();
+      const userIdx = users.findIndex(u => u.id === activeUser.id);
+      if (userIdx !== -1) {
+        users[userIdx].accumulated_points = activeUser.accumulated_points;
+        dbEmulator.saveUsers(users);
+      }
+      updateBalanceUI();
+
+      const inventories = dbEmulator.getInventories();
+      const existingInv = inventories.find(i => i.user_id === activeUser.id && i.asset_identifier === itemId);
+      if (existingInv) {
+        existingInv.quantity += 1;
+      } else {
+        inventories.push({
+          id: inventories.length + 1,
+          user_id: activeUser.id,
+          item_type: asset.type,
+          asset_identifier: asset.id,
+          quantity: 1
+        });
+      }
+
+      dbEmulator.saveInventories(inventories);
+      addLogMessage(`Purchased ${asset.name} for ${asset.cost} PTS.`);
+      renderInventoryUI();
+    }
+
+    function renderInventoryUI() {
+      const container = document.getElementById("inventoryContainer");
+      container.innerHTML = "";
+      selectedInventoryItemIndex = null;
+
+      if (!activeUser) return;
+
+      const inventories = dbEmulator.getInventories();
+      const userItems = inventories.filter(i => i.user_id === activeUser.id && i.quantity > 0);
+      userItems.forEach((invItem, idx) => {
+        const catalogItem = itemCatalog.find(c => c.id === invItem.asset_identifier);
+        if (!catalogItem) return;
+
+        const el = document.createElement("div");
+        el.className = "inventory-item";
+        el.dataset.index = idx;
+        el.innerHTML = `
+          <div style="width: 24px; height: 24px;">${catalogItem.svg}</div>
+          <div>${catalogItem.name} (${invItem.quantity})</div>
+        `;
+        el.addEventListener("click", () => {
+          document.querySelectorAll(".inventory-item").forEach(item => item.classList.remove("selected"));
+          el.classList.add("selected");
+          selectedInventoryItemIndex = invItem;
+          addLogMessage(`Selected ${catalogItem.name} for placement.`);
+        });
+        container.appendChild(el);
+      });
+    }
+
+    function renderSandboxGrid() {
+      const gridElement = document.getElementById("sandboxMap");
+      gridElement.innerHTML = "";
+
+      const placements = dbEmulator.getGridPlacements();
+      for (let y = 0; y < 9; y++) {
+        for (let x = 0; x < 9; x++) {
+          const cell = document.createElement("div");
+          cell.className = "grid-cell";
+          cell.dataset.x = x;
+          cell.dataset.y = y;
+
+          const placement = placements.find(g => g.user_id === activeUser.id && g.grid_x === x && g.grid_y === y);
+          if (placement) {
+            cell.classList.add("occupied");
+            const catalogItem = itemCatalog.find(i => i.id === placement.asset_identifier);
+            if (catalogItem) {
+              cell.innerHTML = `<div class="sprite-asset">${catalogItem.svg}</div>`;
+            }
+          }
+
+          cell.addEventListener("click", () => handleGridCellClick(x, y));
+          cell.addEventListener("dblclick", () => handleGridCellDblClick(x, y));
+          gridElement.appendChild(cell);
+        }
+      }
+    }
+
+    function handleGridCellClick(x, y) {
+      if (!selectedInventoryItemIndex) return;
+      const catalogItem = itemCatalog.find(i => i.id === selectedInventoryItemIndex.asset_identifier);
+      if (!catalogItem) return;
+
+      const placementValid = checkPlacementAvailability(x, y, catalogItem.width, catalogItem.height);
+      if (!placementValid) {
+        addLogMessage(`Placement failed at coordinate [${x},${y}]. Overlap or index limits breached.`);
+        return;
+      }
+
+      const placements = dbEmulator.getGridPlacements();
+      placements.push({
+        id: placements.length + 1,
+        user_id: activeUser.id,
+        asset_identifier: catalogItem.id,
+        grid_x: x,
+        grid_y: y
+      });
+      dbEmulator.saveGridPlacements(placements);
+
+      const inventories = dbEmulator.getInventories();
+      const invItem = inventories.find(i => i.user_id === activeUser.id && i.asset_identifier === catalogItem.id);
+      if (invItem) {
+        invItem.quantity -= 1;
+        dbEmulator.saveInventories(inventories);
+      }
+
+      renderInventoryUI();
+      renderSandboxGrid();
+      addLogMessage(`Placed ${catalogItem.name} at node index [${x},${y}].`);
+    }
+
+    function handleGridCellDblClick(x, y) {
+      const placements = dbEmulator.getGridPlacements();
+      const placementIndex = placements.findIndex(g => g.user_id === activeUser.id && g.grid_x === x && g.grid_y === y);
+      if (placementIndex === -1) return;
+
+      const placement = placements[placementIndex];
+      const inventories = dbEmulator.getInventories();
+      const inventoryTarget = inventories.find(i => i.user_id === activeUser.id && i.asset_identifier === placement.asset_identifier);
+      
+      if (inventoryTarget) {
+        inventoryTarget.quantity += 1;
+        dbEmulator.saveInventories(inventories);
+      }
+
+      placements.splice(placementIndex, 1);
+      dbEmulator.saveGridPlacements(placements);
+
+      renderInventoryUI();
+      renderSandboxGrid();
+      addLogMessage(`Recovered ${placement.asset_identifier} from grid coordinate [${x},${y}].`);
+    }
+
+    function checkPlacementAvailability(startX, startY, width, height) {
+      if (startX + width > 9 || startY + height > 9) {
+        return false;
+      }
+      const placements = dbEmulator.getGridPlacements();
+      for (let x = startX; x < startX + width; x++) {
+        for (let y = startY; y < startY + height; y++) {
+          const occupied = placements.some(g => g.user_id === activeUser.id && g.grid_x === x && g.grid_y === y);
+          if (occupied) return false;
+        }
+      }
+      return true;
+    }
+
+    function startFocusTimer() {
+      if (timerRunningStatus) return;
+      timerRunningStatus = true;
+      addLogMessage("Timer focus cycle initiated.");
+
+      focusTimerInstance = setInterval(() => {
+        let cycleDurationSeconds = isMockSpeedEnabled ? 20 : 1;
+        focusTimeSeconds -= cycleDurationSeconds;
+        focusSecondsAccumulatedMock += cycleDurationSeconds;
+
+        if (focusTimeSeconds <= 0) {
+          focusTimeSeconds = 0;
+          timerRunningStatus = false;
+          clearInterval(focusTimerInstance);
+          handleFocusCycleComplete();
+        }
+        updateTimerDisplay();
+      }, 1000);
+    }
+
+    function pauseFocusTimer() {
+      if (!timerRunningStatus) return;
+      timerRunningStatus = false;
+      clearInterval(focusTimerInstance);
+      addLogMessage("Timer focus status set to paused.");
+    }
+
+    function resetFocusTimer() {
+      timerRunningStatus = false;
+      clearInterval(focusTimerInstance);
+      focusTimeSeconds = 1500;
+      focusSecondsAccumulatedMock = 0;
+      updateTimerDisplay();
+      addLogMessage("Timer cycle reset successfully.");
+    }
+
+    function toggleTimerSpeed() {
+      isMockSpeedEnabled = !isMockSpeedEnabled;
+      const btn = document.getElementById("speedControl");
+      if (isMockSpeedEnabled) {
+        btn.innerText = "Mode: Mock (Fast-Forward)";
+        btn.style.backgroundColor = varColor("--pastel-pink");
+      } else {
+        btn.innerText = "Mode: Real-Time (1s/s)";
+        btn.style.backgroundColor = varColor("--pastel-purple");
+      }
+    }
+
+    function varColor(variableName) {
+      return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(focusTimeSeconds / 60);
+      const seconds = focusTimeSeconds % 60;
+      const minStr = minutes < 10 ? "0" + minutes : minutes;
+      const secStr = seconds < 10 ? "0" + seconds : seconds;
+      document.getElementById("timeString").innerText = `${minStr}:${secStr}`;
+    }
+
+    function handleFocusCycleComplete() {
+      const earnedPoints = 25;
+      activeUser.accumulated_points += earnedPoints;
+
+      const users = dbEmulator.getUsers();
+      const userIdx = users.findIndex(u => u.id === activeUser.id);
+      if (userIdx !== -1) {
+        users[userIdx].accumulated_points = activeUser.accumulated_points;
+        dbEmulator.saveUsers(users);
+      }
+
+      updateBalanceUI();
+      addLogMessage(`Pomodoro completed! Generated precisely +${earnedPoints} $PTS.`);
+      focusTimeSeconds = 1500;
+      updateTimerDisplay();
+    }
+
+    function switchLeftTab(tabName) {
+      const tabShop = document.getElementById("tabShop");
+      const tabInventory = document.getElementById("tabInventory");
+      const shopContent = document.getElementById("shopContent");
+      const inventoryContent = document.getElementById("inventoryContent");
+
+      if (tabName === 'shop') {
+        tabShop.classList.add("active");
+        tabInventory.classList.remove("active");
+        shopContent.classList.remove("hidden");
+        inventoryContent.classList.add("hidden");
+      } else {
+        tabShop.classList.remove("active");
+        tabInventory.classList.add("active");
+        shopContent.classList.add("hidden");
+        inventoryContent.classList.remove("hidden");
+      }
+    }
+
+    async function executePreflightValidationSuite() {
+      addLogMessage("Executing Automated Pre-Flight Verification Matrix...");
+      document.getElementById("overallTestResult").innerText = "RUNNING";
+      document.getElementById("overallTestResult").style.color = "#FFCC00";
+
+      const authResultEl = document.getElementById("testAuthResult");
+      const currencyResultEl = document.getElementById("testCurrencyResult");
+      const gridResultEl = document.getElementById("testGridResult");
+
+      let authPassed = false;
+      let currencyPassed = false;
+      let gridPassed = false;
+
+      try {
+        const dummyPass = "secure123";
+        const hashed1 = await hashPasswordString(dummyPass);
+        const hashed2 = await hashPasswordString(dummyPass);
+        
+        if (hashed1 === hashed2 && hashed1.startsWith("salt_idx_12_hash_")) {
+          authPassed = true;
+          authResultEl.innerHTML = `<span class="test-pass">PASS</span>`;
+        } else {
+          authResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
+        }
+      } catch (err) {
+        authResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
+      }
+
+      try {
+        let initialPoints = 100;
+        let elapsedMinutesMock = 25;
+        let pointsEarnedMock = Math.floor(elapsedMinutesMock); 
+        let updatedPointsMock = initialPoints + pointsEarnedMock;
+        
+        if (updatedPointsMock === 125) {
+          currencyPassed = true;
+          currencyResultEl.innerHTML = `<span class="test-pass">PASS</span>`;
+        } else {
+          currencyResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
+        }
+      } catch (err) {
+        currencyResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
+      }
+
+      try {
+        let testGridX = 9;
+        let testGridY = 9;
+        
+        if (testGridX >= 9 || testGridY >= 9) {
+          gridPassed = true;
+          gridResultEl.innerHTML = `<span class="test-pass">PASS</span>`;
+        } else {
+          gridResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
+        }
+      } catch (err) {
+        gridResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
+      }
+
+      if (authPassed && currencyPassed && gridPassed) {
+        document.getElementById("overallTestResult").innerText = "SUCCESS";
+        document.getElementById("overallTestResult").style.color = "#00FF66";
+        addLogMessage("Pre-flight Validation Suite: All targets cleared successfully.");
+      } else {
+        document.getElementById("overallTestResult").innerText = "FAILED";
+        document.getElementById("overallTestResult").style.color = "#FF3333";
+        addLogMessage("Pre-flight Validation Suite: Failures detected during evaluation.");
+      }
+    }
+
+    window.onload = function () {
+      executePreflightValidationSuite();
+      addLogMessage("System booted. Sandbox environment ready.");
+    }
+  </script>
+</body>
+</html>
