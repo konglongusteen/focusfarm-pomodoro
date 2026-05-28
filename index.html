@@ -35,6 +35,17 @@
       align-items: center;
       min-height: 100vh;
       overflow-x: hidden;
+      position: relative;
+    }
+
+    #weather-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
     }
 
     header {
@@ -44,11 +55,12 @@
       padding: 16px;
       text-align: center;
       box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+      z-index: 5;
     }
 
     h1 {
       margin: 0;
-      font-size: 20px;
+      font-size: 18px;
       color: #FFF;
       text-shadow: 3px 3px 0 var(--border-color);
       letter-spacing: 1px;
@@ -62,6 +74,7 @@
       max-width: 1200px;
       width: 100%;
       padding: 24px;
+      z-index: 5;
     }
 
     .panel {
@@ -134,10 +147,6 @@
       background-color: var(--pastel-pink);
     }
 
-    .pixel-btn.google {
-      background-color: var(--pastel-blue);
-    }
-
     .dashboard-layout {
       display: flex;
       flex-wrap: wrap;
@@ -166,13 +175,66 @@
 
     .timer-card {
       text-align: center;
+      position: relative;
+    }
+
+    .ring-wrapper {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 10px auto;
+    }
+
+    .ring-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: #E2D9EC;
+      stroke-width: 12;
+    }
+
+    .ring-fill {
+      fill: none;
+      stroke: #72B182;
+      stroke-width: 12;
+      stroke-dasharray: 628;
+      stroke-dashoffset: 628;
+      transition: stroke-dashoffset 0.5s ease;
+      stroke-linecap: round;
+    }
+
+    .timer-inner-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      text-align: center;
     }
 
     .timer-display {
-      font-size: 36px;
-      margin: 20px 0;
+      font-size: 26px;
       color: var(--border-color);
       text-shadow: 2px 2px 0 var(--pastel-pink);
+    }
+
+    .config-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .timer-setting {
+      width: 80px;
+      padding: 6px;
+      border: 3px solid var(--border-color);
+      text-align: center;
+      font-size: 8px;
     }
 
     .timer-controls {
@@ -191,7 +253,7 @@
     }
 
     .points-display {
-      font-size: 12px;
+      font-size: 11px;
       margin-top: 14px;
       display: flex;
       align-items: center;
@@ -205,6 +267,40 @@
       background-color: var(--pastel-yellow);
       border: 2px solid var(--border-color);
       border-radius: 50%;
+    }
+
+    .vitality-container {
+      margin-top: 12px;
+      border: 4px solid var(--border-color);
+      background: #FFF;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .vitality-bar {
+      height: 16px;
+      background: #EAEAEA;
+      border: 2px solid var(--border-color);
+      position: relative;
+      margin-top: 6px;
+    }
+
+    .vitality-fill {
+      height: 100%;
+      background: #72B182;
+      width: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .shield-badge {
+      font-size: 8px;
+      background: #E1AF44;
+      color: #FFF;
+      padding: 2px 6px;
+      border-radius: 2px;
+      display: inline-block;
+      margin-top: 4px;
+      border: 1px solid var(--border-color);
     }
 
     .grid-container {
@@ -276,6 +372,16 @@
       justify-content: center;
       pointer-events: none;
       z-index: 2;
+    }
+
+    .lantern-glow::before {
+      content: "";
+      position: absolute;
+      width: 160%;
+      height: 160%;
+      background: radial-gradient(circle, rgba(254,233,134,0.45) 0%, rgba(254,233,134,0) 70%);
+      pointer-events: none;
+      z-index: 1;
     }
 
     .shop-items {
@@ -351,37 +457,6 @@
       border: 4px solid var(--border-color);
     }
 
-    .test-suite-panel {
-      border: 6px double var(--border-color);
-      background-color: #1A1A1A;
-      color: #FFF;
-      padding: 16px;
-      font-size: 9px;
-    }
-
-    .test-header {
-      color: #00FF66;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      font-size: 10px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .test-item {
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .test-pass {
-      color: #00FF66;
-    }
-
-    .test-fail {
-      color: #FF3333;
-    }
-
     .action-row {
       display: flex;
       justify-content: space-between;
@@ -434,9 +509,57 @@
       cursor: pointer;
       margin-bottom: 8px;
     }
+
+    .jukebox-ui {
+      background: #FFF;
+      border: 4px solid var(--border-color);
+      padding: 8px;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .speech-bubble {
+      position: absolute;
+      background: white;
+      border: 3px solid var(--border-color);
+      padding: 6px;
+      font-size: 6px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 10;
+      width: 80px;
+      text-align: center;
+      transform: translateY(-35px);
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+    }
+
+    .speech-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: white transparent transparent transparent;
+    }
+
+    .speech-bubble::before {
+      content: "";
+      position: absolute;
+      bottom: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 7px;
+      border-style: solid;
+      border-color: var(--border-color) transparent transparent transparent;
+      z-index: -1;
+    }
   </style>
 </head>
 <body>
+
+  <canvas id="weather-particles"></canvas>
 
   <header>
     <h1>FocusFarm 8-Bit Pomodoro</h1>
@@ -457,8 +580,6 @@
       <div id="authErrorMsg" class="test-fail" style="font-size: 8px; margin-bottom: 12px; display: none;"></div>
       <button onclick="handleNativeLogin()" class="pixel-btn">Secure Login</button>
       <button onclick="handleNativeRegister()" class="pixel-btn secondary">Register User Account</button>
-      <div style="text-align: center; margin: 12px 0; font-size: 8px;">OR</div>
-      <button onclick="handleGoogleOAuth()" class="pixel-btn google">Sign In with Google Account</button>
     </div>
 
     <div id="dashboardPanel" class="dashboard-layout hidden">
@@ -471,7 +592,29 @@
             <button class="pixel-btn secondary" style="width: auto; padding: 6px; font-size: 8px; margin: 0;" onclick="handleLogout()">Logout</button>
           </div>
           <div class="status-badge" id="timerStatus">FOCUSING</div>
-          <div class="timer-display" id="timeString">25:00</div>
+          
+          <div class="ring-wrapper">
+            <svg class="ring-svg" viewBox="0 0 220 220">
+              <circle class="ring-bg" cx="110" cy="110" r="100" />
+              <circle id="harvestRingFill" class="ring-fill" cx="110" cy="110" r="100" />
+            </svg>
+            <div class="timer-inner-content">
+              <div class="timer-display" id="timeString">25:00</div>
+              <div style="font-size: 6px; color: gray; margin-top: 4px;">Harvest Progress</div>
+            </div>
+          </div>
+
+          <div class="config-controls">
+            <div>
+              <div style="font-size: 6px; margin-bottom: 2px;">Study Min</div>
+              <input type="number" id="studyConfig" class="timer-setting" value="25" min="1" max="180" onchange="adjustConfiguredTimes()">
+            </div>
+            <div>
+              <div style="font-size: 6px; margin-bottom: 2px;">Break Min</div>
+              <input type="number" id="breakConfig" class="timer-setting" value="5" min="1" max="60" onchange="adjustConfiguredTimes()">
+            </div>
+          </div>
+
           <button id="speedControl" class="speed-toggle" onclick="toggleTimerSpeed()">Mode: Real-Time (1s/s)</button>
           <div class="timer-controls">
             <button onclick="startFocusTimer()" class="pixel-btn" style="background-color: var(--pastel-mint)">Start</button>
@@ -481,6 +624,14 @@
           <div class="points-display">
             <div class="points-icon"></div>
             <span>Balance: <span id="userPoints">0</span> $PTS</span>
+          </div>
+
+          <div class="vitality-container">
+            <div style="font-size: 7px; text-transform: uppercase;">Farm Vitality ELO: <span id="vitalityVal">100</span></div>
+            <div class="vitality-bar">
+              <div id="vitalityFill" class="vitality-fill"></div>
+            </div>
+            <div id="shieldStatus" class="shield-badge hidden">🛡️ Drought Protected</div>
           </div>
         </div>
 
@@ -500,6 +651,11 @@
           </div>
         </div>
 
+        <div id="jukeboxUi" class="jukebox-ui hidden">
+          <div style="font-size: 8px; margin-bottom: 6px; text-transform: uppercase;">📻 Jukebox Active</div>
+          <button id="playMuteSynth" class="pixel-btn" style="font-size: 8px; padding: 8px; margin: 0;" onclick="toggleSynthMelody()">Play Melody Synth</button>
+        </div>
+
       </div>
 
       <div class="right-side">
@@ -507,25 +663,6 @@
         <div class="panel" style="text-align: center;">
           <div style="font-size: 10px; margin-bottom: 12px; text-transform: uppercase;">9x9 Sandbox Grid Area</div>
           <div class="grid-container" id="sandboxMap"></div>
-        </div>
-
-        <div class="panel test-suite-panel">
-          <div class="test-header">
-            <span>Automated Pre-Flight Verification Matrix</span>
-            <span id="overallTestResult" style="color: var(--pastel-mint)">RUNNING</span>
-          </div>
-          <div class="test-item">
-            <span>Auth Integrity Checks (Passwords)</span>
-            <span id="testAuthResult">PENDING</span>
-          </div>
-          <div class="test-item">
-            <span>Currency Conversion Precision (+25pts)</span>
-            <span id="testCurrencyResult">PENDING</span>
-          </div>
-          <div class="test-item">
-            <span>Grid Coordinates Collision / Out-of-bounds</span>
-            <span id="testGridResult">PENDING</span>
-          </div>
         </div>
 
         <div class="system-log" id="systemActivityLog"></div>
@@ -558,35 +695,39 @@
 
     let activeUser = null;
     let focusTimerInstance = null;
-    let focusTimeSeconds = 1500;
     let timerRunningStatus = false;
     let isMockSpeedEnabled = false;
     let focusSecondsAccumulatedMock = 0;
+    
+    let currentMode = "study"; 
+    let studyDurationMinutes = 25;
+    let breakDurationMinutes = 5;
+    let focusTimeSeconds = 1500;
 
     let itemCatalog = [
       {
         id: "slime",
         name: "Pet: Slime",
         type: "Pet",
-        cost: 250,
+        cost: 125,
         width: 1,
         height: 1,
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="20" y="50" width="60" height="30" fill="#B8E8D0" stroke="#4A4E69" stroke-width="6"/><rect x="30" y="60" width="10" height="10" fill="#4A4E69"/><rect x="60" y="60" width="10" height="10" fill="#4A4E69"/></svg>`
+        svg: `<svg class="slime-bob" viewBox="0 0 100 100" width="100%" height="100%"><style>.slime-bob { animation: slimeBob 1.2s infinite ease-in-out; transform-origin: bottom; } @keyframes slimeBob { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.15, 0.85); } }</style><rect x="20" y="50" width="60" height="30" fill="#B8E8D0" stroke="#4A4E69" stroke-width="6"/><rect x="30" y="60" width="10" height="10" fill="#4A4E69"/><rect x="60" y="60" width="10" height="10" fill="#4A4E69"/></svg>`
       },
       {
         id: "bonsai_dragon",
         name: "Pet: Dragon",
         type: "Pet",
-        cost: 250,
+        cost: 125,
         width: 1,
         height: 1,
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="30" y="30" width="40" height="50" fill="#C9B8E8" stroke="#4A4E69" stroke-width="6"/><rect x="20" y="50" width="15" height="15" fill="#F2C4CE"/><rect x="40" y="45" width="6" height="6" fill="#000"/><rect x="54" y="45" width="6" height="6" fill="#000"/></svg>`
+        svg: `<svg class="dragon-breathe" viewBox="0 0 100 100" width="100%" height="100%"><style>.dragon-breathe { animation: dragBreathe 2s infinite ease-in-out; transform-origin: bottom; } @keyframes dragBreathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px) scaleY(1.05); } }</style><rect x="30" y="30" width="40" height="50" fill="#C9B8E8" stroke="#4A4E69" stroke-width="6"/><rect x="20" y="50" width="15" height="15" fill="#F2C4CE"/><rect x="40" y="45" width="6" height="6" fill="#000"/><rect x="54" y="45" width="6" height="6" fill="#000"/></svg>`
       },
       {
         id: "retro_desk",
         name: "Desk",
         type: "Furniture",
-        cost: 120,
+        cost: 60,
         width: 2,
         height: 1,
         svg: `<svg viewBox="0 0 100 50" width="100%" height="100%"><rect x="10" y="10" width="80" height="20" fill="#F2EAB8" stroke="#4A4E69" stroke-width="4"/><rect x="20" y="30" width="10" height="15" fill="#4A4E69"/><rect x="70" y="30" width="10" height="15" fill="#4A4E69"/></svg>`
@@ -595,50 +736,121 @@
         id: "lounge_mat",
         name: "Lounge Mat",
         type: "Furniture",
-        cost: 120,
+        cost: 60,
         width: 1,
         height: 1,
         svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="15" y="15" width="70" height="70" fill="#B8D8F2" stroke="#4A4E69" stroke-width="6"/><line x1="15" y1="15" x2="85" y2="85" stroke="#4A4E69" stroke-width="4"/></svg>`
       },
       {
         id: "sprout",
-        name: "Sprout",
+        name: "Sprout (Growth)",
         type: "Plant",
-        cost: 50,
+        cost: 25,
         width: 1,
         height: 1,
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="40" y="50" width="20" height="30" fill="#8B5A2B" stroke="#4A4E69" stroke-width="5"/><path d="M50,20 Q30,35 50,50 Q70,35 50,20 Z" fill="#B8E8D0" stroke="#4A4E69" stroke-width="4"/></svg>`
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="45" y="70" width="10" height="15" fill="#8B5A2B" stroke="#4A4E69" stroke-width="4"/><path d="M50,45 Q40,55 50,65 Q60,55 50,45 Z" fill="#B8E8D0" stroke="#4A4E69" stroke-width="3"/></svg>`
       },
       {
         id: "terrarium",
         name: "Terrarium Jar",
         type: "Plant",
-        cost: 50,
+        cost: 25,
         width: 1,
         height: 1,
         svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="35" fill="none" stroke="#4A4E69" stroke-width="6"/><rect x="40" y="50" width="20" height="25" fill="#F2C4CE"/></svg>`
       },
       {
         id: "jukebox",
-        name: "Jukebox",
+        name: "Jukebox (Synth)",
         type: "Decor",
-        cost: 300,
+        cost: 150,
         width: 1,
         height: 1,
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="20" y="20" width="60" height="70" fill="#F2C4CE" stroke="#4A4E69" stroke-width="6"/><rect x="35" y="40" width="30" height="30" fill="#F2EAB8" stroke="#4A4E69" stroke-width="4"/></svg>`
+        svg: `<svg class="jb-pulse" viewBox="0 0 100 100" width="100%" height="100%"><style>.jb-pulse { animation: pulseJb 0.8s infinite alternate ease-in-out; } @keyframes pulseJb { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }</style><rect x="20" y="20" width="60" height="70" fill="#F2C4CE" stroke="#4A4E69" stroke-width="6"/><rect x="35" y="40" width="30" height="30" fill="#F2EAB8" stroke="#4A4E69" stroke-width="4"/></svg>`
       },
       {
         id: "mystic_orb",
         name: "Mystic Orb",
         type: "Decor",
-        cost: 300,
+        cost: 150,
         width: 1,
         height: 1,
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="40" r="25" fill="#C9B8E8" stroke="#4A4E69" stroke-width="6"/><rect x="35" y="65" width="30" height="15" fill="#4A4E69"/></svg>`
+        svg: `<svg class="orb-float" viewBox="0 0 100 100" width="100%" height="100%"><style>.orb-float { animation: floatOrb 2s infinite ease-in-out; } @keyframes floatOrb { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }</style><circle cx="50" cy="40" r="25" fill="#C9B8E8" stroke="#4A4E69" stroke-width="6"/><rect x="35" y="65" width="30" height="15" fill="#4A4E69"/></svg>`
+      },
+      {
+        id: "sprinkler",
+        name: "Sprinkler (Boost)",
+        type: "Utility",
+        cost: 75,
+        width: 1,
+        height: 1,
+        svg: `<svg class="sprinkler-spin" viewBox="0 0 100 100" width="100%" height="100%"><style>.sprinkler-spin { animation: spinSp 4s infinite linear; } @keyframes spinSp { 100% { transform: rotate(360deg); } }</style><rect x="40" y="60" width="20" height="20" fill="#B8D8F2" stroke="#4A4E69" stroke-width="4"/><circle cx="50" cy="40" r="10" fill="#FFF" stroke="#4A4E69" stroke-width="4"/><line x1="50" y1="30" x2="50" y2="10" stroke="#4A4E69" stroke-width="4"/></svg>`
+      },
+      {
+        id: "cozy_lantern",
+        name: "Cozy Lantern",
+        type: "Utility",
+        cost: 100,
+        width: 1,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="35" y="30" width="30" height="40" fill="#F2EAB8" stroke="#4A4E69" stroke-width="4"/><rect x="45" y="40" width="10" height="20" fill="#FFCC00"/><line x1="50" y1="30" x2="50" y2="10" stroke="#4A4E69" stroke-width="4"/></svg>`
+      },
+      {
+        id: "drought_shield",
+        name: "Drought Shield",
+        type: "Shield",
+        cost: 50,
+        width: 1,
+        height: 1,
+        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><polygon points="50,15 80,30 80,65 50,85 20,65 20,30" fill="#E1AF44" stroke="#4A4E69" stroke-width="6"/></svg>`
       }
     ];
 
     let selectedInventoryItemIndex = null;
+    let particles = [];
+    let canvas, ctx;
+    let audioCtx = null;
+    let synthInterval = null;
+    let isSynthPlaying = false;
+
+    const petPhrases = [
+      "Keep going!",
+      "Focus is key!",
+      "Superb work!",
+      "Do your best!",
+      "Doing great!",
+      "Focus now!",
+      "Almost there!"
+    ];
+
+    function play8BitAlert() {
+      const internalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const melody = [523.25, 659.25, 783.99, 1046.50]; 
+      let time = internalAudioCtx.currentTime;
+
+      melody.forEach((frequency, index) => {
+        const osc = internalAudioCtx.createOscillator();
+        const gain = internalAudioCtx.createGain();
+        osc.type = "square";
+        osc.frequency.setValueAtTime(frequency, time);
+        gain.gain.setValueAtTime(0.12, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+        osc.connect(gain);
+        gain.connect(internalAudioCtx.destination);
+        osc.start(time);
+        osc.stop(time + 0.18);
+        time += 0.15;
+      });
+    }
+
+    function adjustConfiguredTimes() {
+      studyDurationMinutes = Math.max(1, parseInt(document.getElementById("studyConfig").value) || 25);
+      breakDurationMinutes = Math.max(1, parseInt(document.getElementById("breakConfig").value) || 5);
+      if (!timerRunningStatus) {
+        focusTimeSeconds = (currentMode === "study" ? studyDurationMinutes : breakDurationMinutes) * 60;
+        updateTimerDisplay();
+      }
+    }
 
     function addLogMessage(msg) {
       const container = document.getElementById("systemActivityLog");
@@ -677,6 +889,10 @@
         password_hash: hashed,
         google_id: null,
         accumulated_points: 0,
+        vitality_elo: 100,
+        harvest_target: 4,
+        harvest_completed: 0,
+        drought_shields: 0,
         created_at: new Date().toISOString()
       };
 
@@ -712,37 +928,19 @@
 
       errorMsg.style.display = "none";
       activeUser = matched;
+      if (activeUser.vitality_elo === undefined) activeUser.vitality_elo = 100;
+      if (activeUser.harvest_target === undefined) activeUser.harvest_target = 4;
+      if (activeUser.harvest_completed === undefined) activeUser.harvest_completed = 0;
+      if (activeUser.drought_shields === undefined) activeUser.drought_shields = 0;
+
       addLogMessage(`Authenticated successfully as: ${activeUser.username}`);
-      transitionToDashboard();
-    }
-
-    function handleGoogleOAuth() {
-      const mockGoogleId = "google_user_" + Math.floor(Math.random() * 900000 + 100000);
-      const mockUsername = "G_User_" + Math.floor(Math.random() * 9000);
-      
-      const users = dbEmulator.getUsers();
-      let matched = users.find(u => u.google_id === mockGoogleId);
-      if (!matched) {
-        matched = {
-          id: users.length + 1,
-          username: mockUsername,
-          password_hash: null,
-          google_id: mockGoogleId,
-          accumulated_points: 0,
-          created_at: new Date().toISOString()
-        };
-        users.push(matched);
-        dbEmulator.saveUsers(users);
-      }
-
-      activeUser = matched;
-      addLogMessage(`OAuth2 Login success. ID: ${mockGoogleId}`);
       transitionToDashboard();
     }
 
     function handleLogout() {
       activeUser = null;
       pauseFocusTimer();
+      stopSynthesizer();
       document.getElementById("dashboardPanel").classList.add("hidden");
       document.getElementById("authPanel").classList.remove("hidden");
       document.getElementById("usernameInput").value = "";
@@ -754,15 +952,56 @@
       document.getElementById("authPanel").classList.add("hidden");
       document.getElementById("dashboardPanel").classList.remove("hidden");
       document.getElementById("userIdText").innerText = `User: ${activeUser.username}`;
+      adjustConfiguredTimes();
       updateBalanceUI();
+      updateVitalityUI();
+      updateHarvestRing();
       renderSandboxGrid();
       renderStoreCatalog();
       renderInventoryUI();
+      updateJukeboxAvailability();
     }
 
     function updateBalanceUI() {
       if (!activeUser) return;
       document.getElementById("userPoints").innerText = activeUser.accumulated_points;
+    }
+
+    function updateVitalityUI() {
+      if (!activeUser) return;
+      document.getElementById("vitalityVal").innerText = activeUser.vitality_elo;
+      const fillPercentage = Math.min(100, Math.max(0, activeUser.vitality_elo));
+      document.getElementById("vitalityFill").style.width = fillPercentage + "%";
+
+      const shieldBadge = document.getElementById("shieldStatus");
+      if (activeUser.drought_shields > 0) {
+        shieldBadge.classList.remove("hidden");
+      } else {
+        shieldBadge.classList.add("hidden");
+      }
+    }
+
+    function updateHarvestRing() {
+      if (!activeUser) return;
+      const ringFill = document.getElementById("harvestRingFill");
+      const target = activeUser.harvest_target || 4;
+      const completed = activeUser.harvest_completed || 0;
+      const fraction = Math.min(1, completed / target);
+      const circumference = 2 * Math.PI * 100;
+      const offset = circumference - (fraction * circumference);
+      ringFill.style.strokeDashoffset = offset;
+    }
+
+    function saveUserState() {
+      const users = dbEmulator.getUsers();
+      const userIdx = users.findIndex(u => u.id === activeUser.id);
+      if (userIdx !== -1) {
+        users[userIdx].accumulated_points = activeUser.accumulated_points;
+        users[userIdx].vitality_elo = activeUser.vitality_elo;
+        users[userIdx].harvest_completed = activeUser.harvest_completed;
+        users[userIdx].drought_shields = activeUser.drought_shields;
+        dbEmulator.saveUsers(users);
+      }
     }
 
     function renderStoreCatalog() {
@@ -793,31 +1032,32 @@
       }
 
       activeUser.accumulated_points -= asset.cost;
-      
-      const users = dbEmulator.getUsers();
-      const userIdx = users.findIndex(u => u.id === activeUser.id);
-      if (userIdx !== -1) {
-        users[userIdx].accumulated_points = activeUser.accumulated_points;
-        dbEmulator.saveUsers(users);
-      }
-      updateBalanceUI();
 
-      const inventories = dbEmulator.getInventories();
-      const existingInv = inventories.find(i => i.user_id === activeUser.id && i.asset_identifier === itemId);
-      if (existingInv) {
-        existingInv.quantity += 1;
+      if (asset.type === "Shield") {
+        activeUser.drought_shields += 1;
+        addLogMessage("Purchased and activated 1 Drought Shield!");
       } else {
-        inventories.push({
-          id: inventories.length + 1,
-          user_id: activeUser.id,
-          item_type: asset.type,
-          asset_identifier: asset.id,
-          quantity: 1
-        });
+        const inventories = dbEmulator.getInventories();
+        const existingInv = inventories.find(i => i.user_id === activeUser.id && i.asset_identifier === itemId);
+        if (existingInv) {
+          existingInv.quantity += 1;
+        } else {
+          inventories.push({
+            id: inventories.length + 1,
+            user_id: activeUser.id,
+            item_type: asset.type,
+            asset_identifier: asset.id,
+            quantity: 1,
+            growth_stage: asset.id === "sprout" ? 0 : null
+          });
+        }
+        dbEmulator.saveInventories(inventories);
+        addLogMessage(`Purchased ${asset.name} for ${asset.cost} PTS.`);
       }
 
-      dbEmulator.saveInventories(inventories);
-      addLogMessage(`Purchased ${asset.name} for ${asset.cost} PTS.`);
+      saveUserState();
+      updateBalanceUI();
+      updateVitalityUI();
       renderInventoryUI();
     }
 
@@ -866,9 +1106,25 @@
           const placement = placements.find(g => g.user_id === activeUser.id && g.grid_x === x && g.grid_y === y);
           if (placement) {
             cell.classList.add("occupied");
-            const catalogItem = itemCatalog.find(i => i.id === placement.asset_identifier);
-            if (catalogItem) {
-              cell.innerHTML = `<div class="sprite-asset">${catalogItem.svg}</div>`;
+            
+            const isLanternGlow = placements.some(g => g.user_id === activeUser.id && g.asset_identifier === "cozy_lantern" && Math.abs(g.grid_x - x) <= 1 && Math.abs(g.grid_y - y) <= 1);
+            if (isLanternGlow) {
+              cell.classList.add("lantern-glow");
+            }
+
+            if (placement.asset_identifier === "sprout") {
+              const stage = placement.growth_stage !== undefined ? placement.growth_stage : 0;
+              cell.innerHTML = `<div class="sprite-asset">${getSproutSvgForStage(stage)}</div>`;
+            } else {
+              const catalogItem = itemCatalog.find(i => i.id === placement.asset_identifier);
+              if (catalogItem) {
+                cell.innerHTML = `<div class="sprite-asset">${catalogItem.svg}</div>`;
+              }
+            }
+
+            if (placement.asset_identifier === "slime" || placement.asset_identifier === "bonsai_dragon") {
+              cell.addEventListener("mouseenter", () => showPetBubble(cell, placement.asset_identifier));
+              cell.addEventListener("mouseleave", () => hidePetBubble(cell));
             }
           }
 
@@ -877,6 +1133,28 @@
           gridElement.appendChild(cell);
         }
       }
+    }
+
+    function showPetBubble(cell, petId) {
+      hidePetBubble(cell);
+      const bubble = document.createElement("div");
+      bubble.className = "speech-bubble";
+      bubble.innerText = petPhrases[Math.floor(Math.random() * petPhrases.length)];
+      cell.appendChild(bubble);
+    }
+
+    function hidePetBubble(cell) {
+      const bubble = cell.querySelector(".speech-bubble");
+      if (bubble) bubble.remove();
+    }
+
+    function getSproutSvgForStage(stage) {
+      if (stage === 1) {
+        return `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="45" y="60" width="10" height="25" fill="#8B5A2B" stroke="#4A4E69" stroke-width="4"/><circle cx="50" cy="45" r="14" fill="#B8E8D0" stroke="#4A4E69" stroke-width="4"/><path d="M50,45 L65,30" stroke="#4A4E69" stroke-width="3"/></svg>`;
+      } else if (stage === 2) {
+        return `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="45" y="55" width="10" height="30" fill="#8B5A2B" stroke="#4A4E69" stroke-width="4"/><circle cx="50" cy="35" r="20" fill="#F2C4CE" stroke="#4A4E69" stroke-width="4"/><circle cx="50" cy="35" r="8" fill="#F2EAB8" stroke="#4A4E69" stroke-width="3"/></svg>`;
+      }
+      return `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="45" y="70" width="10" height="15" fill="#8B5A2B" stroke="#4A4E69" stroke-width="4"/><path d="M50,45 Q40,55 50,65 Q60,55 50,45 Z" fill="#B8E8D0" stroke="#4A4E69" stroke-width="3"/></svg>`;
     }
 
     function handleGridCellClick(x, y) {
@@ -896,7 +1174,8 @@
         user_id: activeUser.id,
         asset_identifier: catalogItem.id,
         grid_x: x,
-        grid_y: y
+        grid_y: y,
+        growth_stage: catalogItem.id === "sprout" ? 0 : null
       });
       dbEmulator.saveGridPlacements(placements);
 
@@ -909,6 +1188,7 @@
 
       renderInventoryUI();
       renderSandboxGrid();
+      updateJukeboxAvailability();
       addLogMessage(`Placed ${catalogItem.name} at node index [${x},${y}].`);
     }
 
@@ -931,6 +1211,7 @@
 
       renderInventoryUI();
       renderSandboxGrid();
+      updateJukeboxAvailability();
       addLogMessage(`Recovered ${placement.asset_identifier} from grid coordinate [${x},${y}].`);
     }
 
@@ -951,7 +1232,7 @@
     function startFocusTimer() {
       if (timerRunningStatus) return;
       timerRunningStatus = true;
-      addLogMessage("Timer focus cycle initiated.");
+      addLogMessage(`Timer ${currentMode.toUpperCase()} cycle initiated.`);
 
       focusTimerInstance = setInterval(() => {
         let cycleDurationSeconds = isMockSpeedEnabled ? 20 : 1;
@@ -962,7 +1243,7 @@
           focusTimeSeconds = 0;
           timerRunningStatus = false;
           clearInterval(focusTimerInstance);
-          handleFocusCycleComplete();
+          handleCycleComplete();
         }
         updateTimerDisplay();
       }, 1000);
@@ -972,13 +1253,15 @@
       if (!timerRunningStatus) return;
       timerRunningStatus = false;
       clearInterval(focusTimerInstance);
-      addLogMessage("Timer focus status set to paused.");
+      addLogMessage("Timer cycle set to paused.");
     }
 
     function resetFocusTimer() {
       timerRunningStatus = false;
       clearInterval(focusTimerInstance);
-      focusTimeSeconds = 1500;
+      currentMode = "study";
+      document.getElementById("timerStatus").innerText = "FOCUSING";
+      focusTimeSeconds = studyDurationMinutes * 60;
       focusSecondsAccumulatedMock = 0;
       updateTimerDisplay();
       addLogMessage("Timer cycle reset successfully.");
@@ -1008,20 +1291,72 @@
       document.getElementById("timeString").innerText = `${minStr}:${secStr}`;
     }
 
-    function handleFocusCycleComplete() {
-      const earnedPoints = 25;
-      activeUser.accumulated_points += earnedPoints;
+    function handleCycleComplete() {
+      play8BitAlert();
 
-      const users = dbEmulator.getUsers();
-      const userIdx = users.findIndex(u => u.id === activeUser.id);
-      if (userIdx !== -1) {
-        users[userIdx].accumulated_points = activeUser.accumulated_points;
-        dbEmulator.saveUsers(users);
+      if (currentMode === "study") {
+        let earnedPoints = studyDurationMinutes;
+
+        const placements = dbEmulator.getGridPlacements();
+        const lanterns = placements.filter(g => g.user_id === activeUser.id && g.asset_identifier === "cozy_lantern");
+        
+        lanterns.forEach(() => {
+          earnedPoints = Math.floor(earnedPoints * 1.1);
+        });
+
+        activeUser.accumulated_points += earnedPoints;
+        activeUser.vitality_elo = Math.min(100, activeUser.vitality_elo + 10);
+        activeUser.harvest_completed += 1;
+
+        placements.forEach(g => {
+          if (g.user_id === activeUser.id && g.asset_identifier === "sprout" && g.growth_stage < 2) {
+            let hasSprinkler = placements.some(sp => sp.user_id === activeUser.id && sp.asset_identifier === "sprinkler" && Math.abs(sp.grid_x - g.grid_x) <= 1 && Math.abs(sp.grid_y - g.grid_y) <= 1);
+            let growthIncrement = hasSprinkler ? 2 : 1;
+            g.growth_stage = Math.min(2, g.growth_stage + growthIncrement);
+          }
+        });
+        dbEmulator.saveGridPlacements(placements);
+
+        if (activeUser.harvest_completed >= activeUser.harvest_target) {
+          activeUser.harvest_completed = 0;
+          const randomItem = itemCatalog[Math.floor(Math.random() * itemCatalog.length)];
+          const inventories = dbEmulator.getInventories();
+          const existingInv = inventories.find(i => i.user_id === activeUser.id && i.asset_identifier === randomItem.id);
+          if (existingInv) {
+            existingInv.quantity += 1;
+          } else {
+            inventories.push({
+              id: inventories.length + 1,
+              user_id: activeUser.id,
+              item_type: randomItem.type,
+              asset_identifier: randomItem.id,
+              quantity: 1,
+              growth_stage: randomItem.id === "sprout" ? 0 : null
+            });
+          }
+          dbEmulator.saveInventories(inventories);
+          addLogMessage(`Daily Harvest Ring Closed! Dropped Free Reward: ${randomItem.name}`);
+          renderInventoryUI();
+        }
+
+        saveUserState();
+        updateBalanceUI();
+        updateVitalityUI();
+        updateHarvestRing();
+        renderSandboxGrid();
+        addLogMessage(`Study completed! Credited +${earnedPoints} $PTS & +10 ELO.`);
+
+        currentMode = "break";
+        document.getElementById("timerStatus").innerText = "BREAK TIME";
+        focusTimeSeconds = breakDurationMinutes * 60;
+        addLogMessage(`Transitioned to Rest Period: ${breakDurationMinutes} minutes.`);
+      } else {
+        currentMode = "study";
+        document.getElementById("timerStatus").innerText = "FOCUSING";
+        focusTimeSeconds = studyDurationMinutes * 60;
+        addLogMessage(`Rest Period ended! Prepare to study: ${studyDurationMinutes} minutes.`);
       }
 
-      updateBalanceUI();
-      addLogMessage(`Pomodoro completed! Generated precisely +${earnedPoints} $PTS.`);
-      focusTimeSeconds = 1500;
       updateTimerDisplay();
     }
 
@@ -1044,77 +1379,138 @@
       }
     }
 
-    async function executePreflightValidationSuite() {
-      addLogMessage("Executing Automated Pre-Flight Verification Matrix...");
-      document.getElementById("overallTestResult").innerText = "RUNNING";
-      document.getElementById("overallTestResult").style.color = "#FFCC00";
-
-      const authResultEl = document.getElementById("testAuthResult");
-      const currencyResultEl = document.getElementById("testCurrencyResult");
-      const gridResultEl = document.getElementById("testGridResult");
-
-      let authPassed = false;
-      let currencyPassed = false;
-      let gridPassed = false;
-
-      try {
-        const dummyPass = "secure123";
-        const hashed1 = await hashPasswordString(dummyPass);
-        const hashed2 = await hashPasswordString(dummyPass);
-        
-        if (hashed1 === hashed2 && hashed1.startsWith("salt_idx_12_hash_")) {
-          authPassed = true;
-          authResultEl.innerHTML = `<span class="test-pass">PASS</span>`;
-        } else {
-          authResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
-        }
-      } catch (err) {
-        authResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
-      }
-
-      try {
-        let initialPoints = 100;
-        let elapsedMinutesMock = 25;
-        let pointsEarnedMock = Math.floor(elapsedMinutesMock); 
-        let updatedPointsMock = initialPoints + pointsEarnedMock;
-        
-        if (updatedPointsMock === 125) {
-          currencyPassed = true;
-          currencyResultEl.innerHTML = `<span class="test-pass">PASS</span>`;
-        } else {
-          currencyResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
-        }
-      } catch (err) {
-        currencyResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
-      }
-
-      try {
-        let testGridX = 9;
-        let testGridY = 9;
-        
-        if (testGridX >= 9 || testGridY >= 9) {
-          gridPassed = true;
-          gridResultEl.innerHTML = `<span class="test-pass">PASS</span>`;
-        } else {
-          gridResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
-        }
-      } catch (err) {
-        gridResultEl.innerHTML = `<span class="test-fail">FAIL</span>`;
-      }
-
-      if (authPassed && currencyPassed && gridPassed) {
-        document.getElementById("overallTestResult").innerText = "SUCCESS";
-        document.getElementById("overallTestResult").style.color = "#00FF66";
-        addLogMessage("Pre-flight Validation Suite: All targets cleared successfully.");
+    function updateJukeboxAvailability() {
+      if (!activeUser) return;
+      const placements = dbEmulator.getGridPlacements();
+      const hasJukebox = placements.some(g => g.user_id === activeUser.id && g.asset_identifier === "jukebox");
+      const ui = document.getElementById("jukeboxUi");
+      if (hasJukebox) {
+        ui.classList.remove("hidden");
       } else {
-        document.getElementById("overallTestResult").innerText = "FAILED";
-        document.getElementById("overallTestResult").style.color = "#FF3333";
-        addLogMessage("Pre-flight Validation Suite: Failures detected during evaluation.");
+        ui.classList.add("hidden");
+        stopSynthesizer();
       }
     }
 
+    function toggleSynthMelody() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      
+      const btn = document.getElementById("playMuteSynth");
+      if (isSynthPlaying) {
+        stopSynthesizer();
+        btn.innerText = "Play Melody Synth";
+        addLogMessage("Jukebox synthesis paused.");
+      } else {
+        isSynthPlaying = true;
+        btn.innerText = "Mute Melody Synth";
+        btn.style.backgroundColor = "var(--pastel-pink)";
+        addLogMessage("Jukebox arpeggiator synth initiated.");
+        playProceduralSequence();
+      }
+    }
+
+    function stopSynthesizer() {
+      isSynthPlaying = false;
+      if (synthInterval) {
+        clearInterval(synthInterval);
+        synthInterval = null;
+      }
+      const btn = document.getElementById("playMuteSynth");
+      if (btn) {
+        btn.innerText = "Play Melody Synth";
+        btn.style.backgroundColor = "var(--pastel-mint)";
+      }
+    }
+
+    function playProceduralSequence() {
+      const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+      let step = 0;
+
+      synthInterval = setInterval(() => {
+        if (!isSynthPlaying) return;
+
+        let note = notes[step % notes.length];
+        if (step % 3 === 0) note *= 1.5;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(note, audioCtx.currentTime);
+
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, x => x + 0.4);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.45);
+
+        step++;
+      }, 350);
+    }
+
+    function initWeatherEngine() {
+      canvas = document.getElementById("weather-particles");
+      ctx = canvas.getContext("2d");
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+      createParticles();
+      animateParticles();
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function createParticles() {
+      particles = [];
+      const particleCount = 45;
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2.5 + 1.5,
+          color: "rgba(254, 233, 134, 0.45)",
+          speedY: Math.random() * 0.8 + 0.2,
+          speedX: Math.random() * 0.4 - 0.2,
+          pulse: Math.random() * 0.1
+        });
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      let intensityMultiplier = 1;
+      if (activeUser) {
+        intensityMultiplier = Math.max(0.1, activeUser.vitality_elo / 100);
+      }
+
+      particles.forEach(p => {
+        p.y += p.speedY * intensityMultiplier;
+        p.x += p.speedX;
+
+        if (p.y > canvas.height) {
+          p.y = 0;
+          p.x = Math.random() * canvas.width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animateParticles);
+    }
+
     window.onload = function () {
-      executePreflightValidationSuite();
+      initWeatherEngine();
       addLogMessage("System booted. Sandbox environment ready.");
     }
   </script>
