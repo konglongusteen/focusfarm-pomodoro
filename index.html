@@ -235,6 +235,14 @@
       border: 3px solid var(--border-color);
       text-align: center;
       font-size: 8px;
+      -webkit-appearance: none;
+      -moz-appearance: textfield;
+    }
+
+    .timer-setting::-webkit-inner-spin-button,
+    .timer-setting::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     .timer-controls {
@@ -555,6 +563,17 @@
       border-color: var(--border-color) transparent transparent transparent;
       z-index: -1;
     }
+
+    .pip-btn {
+      background-color: var(--pastel-yellow);
+      border: 3px solid var(--border-color);
+      padding: 6px;
+      font-size: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -586,52 +605,56 @@
       
       <div class="left-side">
         
-        <div class="panel timer-card">
-          <div class="action-row">
-            <div class="user-info" id="userIdText">User: Guest</div>
-            <button class="pixel-btn secondary" style="width: auto; padding: 6px; font-size: 8px; margin: 0;" onclick="handleLogout()">Logout</button>
-          </div>
-          <div class="status-badge" id="timerStatus">FOCUSING</div>
-          
-          <div class="ring-wrapper">
-            <svg class="ring-svg" viewBox="0 0 220 220">
-              <circle class="ring-bg" cx="110" cy="110" r="100" />
-              <circle id="harvestRingFill" class="ring-fill" cx="110" cy="110" r="100" />
-            </svg>
-            <div class="timer-inner-content">
-              <div class="timer-display" id="timeString">25:00</div>
-              <div style="font-size: 6px; color: gray; margin-top: 4px;">Harvest Progress</div>
+        <div id="mainTimerParent">
+          <div id="timerPopoutContainer" class="panel timer-card">
+            <div class="action-row">
+              <div class="user-info" id="userIdText">User: Guest</div>
+              <button id="logoutBtn" class="pixel-btn secondary" style="width: auto; padding: 6px; font-size: 8px; margin: 0;" onclick="handleLogout()">Logout</button>
             </div>
-          </div>
+            <div class="status-badge" id="timerStatus">FOCUSING</div>
+            
+            <div class="ring-wrapper">
+              <svg class="ring-svg" viewBox="0 0 220 220">
+                <circle class="ring-bg" cx="110" cy="110" r="100" />
+                <circle id="harvestRingFill" class="ring-fill" cx="110" cy="110" r="100" />
+              </svg>
+              <div class="timer-inner-content">
+                <div class="timer-display" id="timeString">25:00</div>
+                <div style="font-size: 6px; color: gray; margin-top: 4px;">Harvest Progress</div>
+              </div>
+            </div>
 
-          <div class="config-controls">
-            <div>
-              <div style="font-size: 6px; margin-bottom: 2px;">Study Min</div>
-              <input type="number" id="studyConfig" class="timer-setting" value="25" min="1" max="180" onchange="adjustConfiguredTimes()">
+            <div class="config-controls" id="timerConfigWrapper">
+              <div>
+                <div style="font-size: 6px; margin-bottom: 2px;">Study Min</div>
+                <input type="number" id="studyConfig" class="timer-setting" value="25" min="1" max="180" onchange="adjustConfiguredTimes()">
+              </div>
+              <div>
+                <div style="font-size: 6px; margin-bottom: 2px;">Break Min</div>
+                <input type="number" id="breakConfig" class="timer-setting" value="5" min="1" max="60" onchange="adjustConfiguredTimes()">
+              </div>
             </div>
-            <div>
-              <div style="font-size: 6px; margin-bottom: 2px;">Break Min</div>
-              <input type="number" id="breakConfig" class="timer-setting" value="5" min="1" max="60" onchange="adjustConfiguredTimes()">
-            </div>
-          </div>
 
-          <button id="speedControl" class="speed-toggle" onclick="toggleTimerSpeed()">Mode: Real-Time (1s/s)</button>
-          <div class="timer-controls">
-            <button onclick="startFocusTimer()" class="pixel-btn" style="background-color: var(--pastel-mint)">Start</button>
-            <button onclick="pauseFocusTimer()" class="pixel-btn secondary">Pause</button>
-            <button onclick="resetFocusTimer()" class="pixel-btn" style="background-color: var(--pastel-blue)">Reset</button>
-          </div>
-          <div class="points-display">
-            <div class="points-icon"></div>
-            <span>Balance: <span id="userPoints">0</span> $PTS</span>
-          </div>
-
-          <div class="vitality-container">
-            <div style="font-size: 7px; text-transform: uppercase;">Farm Vitality ELO: <span id="vitalityVal">100</span></div>
-            <div class="vitality-bar">
-              <div id="vitalityFill" class="vitality-fill"></div>
+            <button id="speedControl" class="speed-toggle" onclick="toggleTimerSpeed()">Mode: Real-Time (1s/s)</button>
+            <div class="timer-controls">
+              <button onclick="startFocusTimer()" class="pixel-btn" style="background-color: var(--pastel-mint)">Start</button>
+              <button onclick="pauseFocusTimer()" class="pixel-btn secondary">Pause</button>
+              <button onclick="resetFocusTimer()" class="pixel-btn" style="background-color: var(--pastel-blue)">Reset</button>
             </div>
-            <div id="shieldStatus" class="shield-badge hidden">🛡️ Drought Protected</div>
+            <button id="popoutBtn" class="pip-btn" onclick="togglePopoutWindow()">Pop Out Timer</button>
+            
+            <div class="points-display" id="timerPointsDisplay">
+              <div class="points-icon"></div>
+              <span>Balance: <span id="userPoints">0</span> $PTS</span>
+            </div>
+
+            <div class="vitality-container" id="timerVitalityContainer">
+              <div style="font-size: 7px; text-transform: uppercase;">Farm Vitality ELO: <span id="vitalityVal">100</span></div>
+              <div class="vitality-bar">
+                <div id="vitalityFill" class="vitality-fill"></div>
+              </div>
+              <div id="shieldStatus" class="shield-badge hidden">🛡️ Drought Protected</div>
+            </div>
           </div>
         </div>
 
@@ -703,13 +726,14 @@
     let studyDurationMinutes = 25;
     let breakDurationMinutes = 5;
     let focusTimeSeconds = 1500;
+    let pipWindowInstance = null;
 
     let itemCatalog = [
       {
         id: "slime",
         name: "Pet: Slime",
         type: "Pet",
-        cost: 125,
+        cost: 60,
         width: 1,
         height: 1,
         svg: `<svg class="slime-bob" viewBox="0 0 100 100" width="100%" height="100%"><style>.slime-bob { animation: slimeBob 1.2s infinite ease-in-out; transform-origin: bottom; } @keyframes slimeBob { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.15, 0.85); } }</style><rect x="20" y="50" width="60" height="30" fill="#B8E8D0" stroke="#4A4E69" stroke-width="6"/><rect x="30" y="60" width="10" height="10" fill="#4A4E69"/><rect x="60" y="60" width="10" height="10" fill="#4A4E69"/></svg>`
@@ -718,7 +742,7 @@
         id: "bonsai_dragon",
         name: "Pet: Dragon",
         type: "Pet",
-        cost: 125,
+        cost: 60,
         width: 1,
         height: 1,
         svg: `<svg class="dragon-breathe" viewBox="0 0 100 100" width="100%" height="100%"><style>.dragon-breathe { animation: dragBreathe 2s infinite ease-in-out; transform-origin: bottom; } @keyframes dragBreathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px) scaleY(1.05); } }</style><rect x="30" y="30" width="40" height="50" fill="#C9B8E8" stroke="#4A4E69" stroke-width="6"/><rect x="20" y="50" width="15" height="15" fill="#F2C4CE"/><rect x="40" y="45" width="6" height="6" fill="#000"/><rect x="54" y="45" width="6" height="6" fill="#000"/></svg>`
@@ -727,7 +751,7 @@
         id: "retro_desk",
         name: "Desk",
         type: "Furniture",
-        cost: 60,
+        cost: 30,
         width: 2,
         height: 1,
         svg: `<svg viewBox="0 0 100 50" width="100%" height="100%"><rect x="10" y="10" width="80" height="20" fill="#F2EAB8" stroke="#4A4E69" stroke-width="4"/><rect x="20" y="30" width="10" height="15" fill="#4A4E69"/><rect x="70" y="30" width="10" height="15" fill="#4A4E69"/></svg>`
@@ -736,7 +760,7 @@
         id: "lounge_mat",
         name: "Lounge Mat",
         type: "Furniture",
-        cost: 60,
+        cost: 30,
         width: 1,
         height: 1,
         svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="15" y="15" width="70" height="70" fill="#B8D8F2" stroke="#4A4E69" stroke-width="6"/><line x1="15" y1="15" x2="85" y2="85" stroke="#4A4E69" stroke-width="4"/></svg>`
@@ -745,7 +769,7 @@
         id: "sprout",
         name: "Sprout (Growth)",
         type: "Plant",
-        cost: 25,
+        cost: 12,
         width: 1,
         height: 1,
         svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="45" y="70" width="10" height="15" fill="#8B5A2B" stroke="#4A4E69" stroke-width="4"/><path d="M50,45 Q40,55 50,65 Q60,55 50,45 Z" fill="#B8E8D0" stroke="#4A4E69" stroke-width="3"/></svg>`
@@ -754,7 +778,7 @@
         id: "terrarium",
         name: "Terrarium Jar",
         type: "Plant",
-        cost: 25,
+        cost: 12,
         width: 1,
         height: 1,
         svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="35" fill="none" stroke="#4A4E69" stroke-width="6"/><rect x="40" y="50" width="20" height="25" fill="#F2C4CE"/></svg>`
@@ -763,7 +787,7 @@
         id: "jukebox",
         name: "Jukebox (Synth)",
         type: "Decor",
-        cost: 150,
+        cost: 70,
         width: 1,
         height: 1,
         svg: `<svg class="jb-pulse" viewBox="0 0 100 100" width="100%" height="100%"><style>.jb-pulse { animation: pulseJb 0.8s infinite alternate ease-in-out; } @keyframes pulseJb { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }</style><rect x="20" y="20" width="60" height="70" fill="#F2C4CE" stroke="#4A4E69" stroke-width="6"/><rect x="35" y="40" width="30" height="30" fill="#F2EAB8" stroke="#4A4E69" stroke-width="4"/></svg>`
@@ -772,7 +796,7 @@
         id: "mystic_orb",
         name: "Mystic Orb",
         type: "Decor",
-        cost: 150,
+        cost: 70,
         width: 1,
         height: 1,
         svg: `<svg class="orb-float" viewBox="0 0 100 100" width="100%" height="100%"><style>.orb-float { animation: floatOrb 2s infinite ease-in-out; } @keyframes floatOrb { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }</style><circle cx="50" cy="40" r="25" fill="#C9B8E8" stroke="#4A4E69" stroke-width="6"/><rect x="35" y="65" width="30" height="15" fill="#4A4E69"/></svg>`
@@ -781,7 +805,7 @@
         id: "sprinkler",
         name: "Sprinkler (Boost)",
         type: "Utility",
-        cost: 75,
+        cost: 35,
         width: 1,
         height: 1,
         svg: `<svg class="sprinkler-spin" viewBox="0 0 100 100" width="100%" height="100%"><style>.sprinkler-spin { animation: spinSp 4s infinite linear; } @keyframes spinSp { 100% { transform: rotate(360deg); } }</style><rect x="40" y="60" width="20" height="20" fill="#B8D8F2" stroke="#4A4E69" stroke-width="4"/><circle cx="50" cy="40" r="10" fill="#FFF" stroke="#4A4E69" stroke-width="4"/><line x1="50" y1="30" x2="50" y2="10" stroke="#4A4E69" stroke-width="4"/></svg>`
@@ -790,7 +814,7 @@
         id: "cozy_lantern",
         name: "Cozy Lantern",
         type: "Utility",
-        cost: 100,
+        cost: 45,
         width: 1,
         height: 1,
         svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="35" y="30" width="30" height="40" fill="#F2EAB8" stroke="#4A4E69" stroke-width="4"/><rect x="45" y="40" width="10" height="20" fill="#FFCC00"/><line x1="50" y1="30" x2="50" y2="10" stroke="#4A4E69" stroke-width="4"/></svg>`
@@ -799,7 +823,7 @@
         id: "drought_shield",
         name: "Drought Shield",
         type: "Shield",
-        cost: 50,
+        cost: 20,
         width: 1,
         height: 1,
         svg: `<svg viewBox="0 0 100 100" width="100%" height="100%"><polygon points="50,15 80,30 80,65 50,85 20,65 20,30" fill="#E1AF44" stroke="#4A4E69" stroke-width="6"/></svg>`
@@ -823,6 +847,10 @@
       "Almost there!"
     ];
 
+    function getTimerDoc() {
+      return pipWindowInstance ? pipWindowInstance.document : document;
+    }
+
     function play8BitAlert() {
       const internalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const melody = [523.25, 659.25, 783.99, 1046.50]; 
@@ -844,8 +872,10 @@
     }
 
     function adjustConfiguredTimes() {
-      studyDurationMinutes = Math.max(1, parseInt(document.getElementById("studyConfig").value) || 25);
-      breakDurationMinutes = Math.max(1, parseInt(document.getElementById("breakConfig").value) || 5);
+      const studyConfigEl = getTimerDoc().getElementById("studyConfig");
+      const breakConfigEl = getTimerDoc().getElementById("breakConfig");
+      studyDurationMinutes = Math.max(1, parseInt(studyConfigEl ? studyConfigEl.value : 25) || 25);
+      breakDurationMinutes = Math.max(1, parseInt(breakConfigEl ? breakConfigEl.value : 5) || 5);
       if (!timerRunningStatus) {
         focusTimeSeconds = (currentMode === "study" ? studyDurationMinutes : breakDurationMinutes) * 60;
         updateTimerDisplay();
@@ -941,6 +971,9 @@
       activeUser = null;
       pauseFocusTimer();
       stopSynthesizer();
+      if (pipWindowInstance) {
+        pipWindowInstance.close();
+      }
       document.getElementById("dashboardPanel").classList.add("hidden");
       document.getElementById("authPanel").classList.remove("hidden");
       document.getElementById("usernameInput").value = "";
@@ -964,32 +997,52 @@
 
     function updateBalanceUI() {
       if (!activeUser) return;
-      document.getElementById("userPoints").innerText = activeUser.accumulated_points;
+      const el = getTimerDoc().getElementById("userPoints");
+      if (el) el.innerText = activeUser.accumulated_points;
     }
 
     function updateVitalityUI() {
       if (!activeUser) return;
-      document.getElementById("vitalityVal").innerText = activeUser.vitality_elo;
+      const vitalityValEl = getTimerDoc().getElementById("vitalityVal");
+      if (vitalityValEl) vitalityValEl.innerText = activeUser.vitality_elo;
+      
       const fillPercentage = Math.min(100, Math.max(0, activeUser.vitality_elo));
-      document.getElementById("vitalityFill").style.width = fillPercentage + "%";
+      const vitalityFillEl = getTimerDoc().getElementById("vitalityFill");
+      if (vitalityFillEl) vitalityFillEl.style.width = fillPercentage + "%";
 
-      const shieldBadge = document.getElementById("shieldStatus");
-      if (activeUser.drought_shields > 0) {
-        shieldBadge.classList.remove("hidden");
-      } else {
-        shieldBadge.classList.add("hidden");
+      const shieldBadge = getTimerDoc().getElementById("shieldStatus");
+      if (shieldBadge) {
+        if (activeUser.drought_shields > 0) {
+          shieldBadge.classList.remove("hidden");
+        } else {
+          shieldBadge.classList.add("hidden");
+        }
       }
     }
 
     function updateHarvestRing() {
       if (!activeUser) return;
-      const ringFill = document.getElementById("harvestRingFill");
+      const ringFill = getTimerDoc().getElementById("harvestRingFill");
+      if (!ringFill) return;
       const target = activeUser.harvest_target || 4;
       const completed = activeUser.harvest_completed || 0;
       const fraction = Math.min(1, completed / target);
       const circumference = 2 * Math.PI * 100;
       const offset = circumference - (fraction * circumference);
       ringFill.style.strokeDashoffset = offset;
+    }
+
+    function simulateInactivityDecay() {
+      if (!activeUser) return;
+      if (activeUser.drought_shields > 0) {
+        activeUser.drought_shields -= 1;
+        addLogMessage("Drought Shield consumed! Farm Vitality saved from 10 ELO decay.");
+      } else {
+        activeUser.vitality_elo = Math.max(0, activeUser.vitality_elo - 10);
+        addLogMessage("Simulated 1-day absence: Farm Vitality decayed by 10 ELO.");
+      }
+      saveUserState();
+      updateVitalityUI();
     }
 
     function saveUserState() {
@@ -1260,7 +1313,8 @@
       timerRunningStatus = false;
       clearInterval(focusTimerInstance);
       currentMode = "study";
-      document.getElementById("timerStatus").innerText = "FOCUSING";
+      const timerStatusEl = getTimerDoc().getElementById("timerStatus");
+      if (timerStatusEl) timerStatusEl.innerText = "FOCUSING";
       focusTimeSeconds = studyDurationMinutes * 60;
       focusSecondsAccumulatedMock = 0;
       updateTimerDisplay();
@@ -1269,13 +1323,15 @@
 
     function toggleTimerSpeed() {
       isMockSpeedEnabled = !isMockSpeedEnabled;
-      const btn = document.getElementById("speedControl");
-      if (isMockSpeedEnabled) {
-        btn.innerText = "Mode: Mock (Fast-Forward)";
-        btn.style.backgroundColor = varColor("--pastel-pink");
-      } else {
-        btn.innerText = "Mode: Real-Time (1s/s)";
-        btn.style.backgroundColor = varColor("--pastel-purple");
+      const btn = getTimerDoc().getElementById("speedControl");
+      if (btn) {
+        if (isMockSpeedEnabled) {
+          btn.innerText = "Mode: Mock (Fast-Forward)";
+          btn.style.backgroundColor = varColor("--pastel-pink");
+        } else {
+          btn.innerText = "Mode: Real-Time (1s/s)";
+          btn.style.backgroundColor = varColor("--pastel-purple");
+        }
       }
     }
 
@@ -1288,7 +1344,10 @@
       const seconds = focusTimeSeconds % 60;
       const minStr = minutes < 10 ? "0" + minutes : minutes;
       const secStr = seconds < 10 ? "0" + seconds : seconds;
-      document.getElementById("timeString").innerText = `${minStr}:${secStr}`;
+      const displayEl = getTimerDoc().getElementById("timeString");
+      if (displayEl) {
+        displayEl.innerText = `${minStr}:${secStr}`;
+      }
     }
 
     function handleCycleComplete() {
@@ -1347,17 +1406,93 @@
         addLogMessage(`Study completed! Credited +${earnedPoints} $PTS & +10 ELO.`);
 
         currentMode = "break";
-        document.getElementById("timerStatus").innerText = "BREAK TIME";
+        const statusEl = getTimerDoc().getElementById("timerStatus");
+        if (statusEl) statusEl.innerText = "BREAK TIME";
         focusTimeSeconds = breakDurationMinutes * 60;
         addLogMessage(`Transitioned to Rest Period: ${breakDurationMinutes} minutes.`);
       } else {
         currentMode = "study";
-        document.getElementById("timerStatus").innerText = "FOCUSING";
+        const statusEl = getTimerDoc().getElementById("timerStatus");
+        if (statusEl) statusEl.innerText = "FOCUSING";
         focusTimeSeconds = studyDurationMinutes * 60;
         addLogMessage(`Rest Period ended! Prepare to study: ${studyDurationMinutes} minutes.`);
       }
 
       updateTimerDisplay();
+    }
+
+    async function togglePopoutWindow() {
+      if (!window.documentPictureInPicture) {
+        addLogMessage("Popout error: Document Picture-in-Picture API is not supported by your current browser.");
+        return;
+      }
+
+      if (pipWindowInstance) {
+        pipWindowInstance.close();
+        return;
+      }
+
+      const container = document.getElementById("timerPopoutContainer");
+      const configWrapper = document.getElementById("timerConfigWrapper");
+      const vitalityWrapper = document.getElementById("timerVitalityContainer");
+      const pointsWrapper = document.getElementById("timerPointsDisplay");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const popBtn = document.getElementById("popoutBtn");
+
+      configWrapper.style.display = "none";
+      vitalityWrapper.style.display = "none";
+      pointsWrapper.style.display = "none";
+      logoutBtn.style.display = "none";
+      popBtn.innerText = "Return to Dashboard";
+
+      try {
+        const pipWindow = await window.documentPictureInPicture.requestWindow({
+          width: 260,
+          height: 380,
+        });
+
+        pipWindowInstance = pipWindow;
+
+        const stylesheets = Array.from(document.styleSheets);
+        stylesheets.forEach((sheet) => {
+          try {
+            const cssRules = Array.from(sheet.cssRules).map((r) => r.cssText).join("");
+            const style = pipWindow.document.createElement("style");
+            style.textContent = cssRules;
+            pipWindow.document.head.appendChild(style);
+          } catch (e) {
+            const link = pipWindow.document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = sheet.href;
+            pipWindow.document.head.appendChild(link);
+          }
+        });
+
+        pipWindow.document.body.style.margin = "0";
+        pipWindow.document.body.style.padding = "10px";
+        pipWindow.document.body.style.backgroundColor = "var(--bg-color)";
+        pipWindow.document.body.appendChild(container);
+
+        pipWindow.addEventListener("pagehide", () => {
+          pipWindowInstance = null;
+          configWrapper.style.display = "flex";
+          vitalityWrapper.style.display = "block";
+          pointsWrapper.style.display = "flex";
+          logoutBtn.style.display = "inline-block";
+          popBtn.innerText = "Pop Out Timer";
+          document.getElementById("mainTimerParent").appendChild(container);
+          addLogMessage("Timer docked back to the main layout.");
+        });
+
+        addLogMessage("Timer popped out into desktop-overlay mode successfully.");
+      } catch (err) {
+        addLogMessage("Popout initialization failed inside the active context.");
+        configWrapper.style.display = "flex";
+        vitalityWrapper.style.display = "block";
+        pointsWrapper.style.display = "flex";
+        logoutBtn.style.display = "inline-block";
+        popBtn.innerText = "Pop Out Timer";
+      }
     }
 
     function switchLeftTab(tabName) {
@@ -1441,7 +1576,7 @@
         osc.frequency.setValueAtTime(note, audioCtx.currentTime);
 
         gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, x => x + 0.4);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
 
         osc.connect(gain);
         gain.connect(audioCtx.destination);
